@@ -73,33 +73,22 @@ spring:
              client-secret: ${GOOGLE_CLIENT_SECRET}
              scope: openid,profile,email
 
-  # --- Email (SMTP) --------------------------------------------------------
-  # Used by MailService to send password-reset links. Fill in your own
-  # username and app password below directly (not an environment variable
-  # this time, by request) — for Gmail: username is your full address, and
-  # "password" must be a 16-character App Password, NOT your normal Gmail
-  # password (Google blocks that for SMTP). Generate one at:
-  # Google Account → Security → 2-Step Verification → App passwords.
-  #
-  # If you're not using Gmail, just change the host/port to match your
-  # provider instead.
-  #
-  # Don't commit this file with real credentials filled in if this repo is
-  # ever shared or made public.
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: ${MAIL_USERNAME:}
-    password: ${MAIL_PASSWORD:}
-    properties:
-      mail.smtp.auth: true
-      mail.smtp.starttls.enable: true
-      mail.smtp.connectiontimeout: 5000
-      mail.smtp.timeout: 5000
-      mail.smtp.writetimeout: 5000
+  # --- Email (Brevo HTTPS API) --------------------------------------------
+  # Password-reset and notification emails now go through Brevo's REST API
+  # (see MailService) instead of raw SMTP, because Render's free tier blocks
+  # outbound SMTP ports — HTTPS isn't blocked, so this keeps working there.
+  # BREVO_API_KEY and MAIL_FROM below must be set as real environment
+  # variables (Render's Environment tab, or locally before running) — see
+  # the setup steps in MailService's class comment for how to get them.
 
 server:
   port: ${PORT:8080}
+
+brevo:
+  api-key: ${BREVO_API_KEY:}
+
+mail:
+  from: ${MAIL_FROM:}
 
 # --- App-specific settings ---------------------------------------------
 # Used to build links that get sent OUTSIDE this server's own requests — right
