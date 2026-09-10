@@ -112,4 +112,4 @@ server:
 # login will still work (that redirect is driven by Google Cloud Console, not
 # this value) — only the emailed reset link will point at the wrong place.
 app:
-  base-url: http://localhost:8080
+  base-url: ${APP_BASE_URL:http://localhost:8080}
