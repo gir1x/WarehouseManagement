@@ -96,7 +96,7 @@ spring:
       mail.smtp.starttls.enable: true
 
 server:
-  port: 8080
+  port: ${PORT:8080}
 
 # --- App-specific settings ---------------------------------------------
 # Used to build links that get sent OUTSIDE this server's own requests — right
