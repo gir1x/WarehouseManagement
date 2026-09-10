@@ -14,9 +14,9 @@ spring:
   #   psql -U postgres -c "CREATE DATABASE wms;"
   # then change the URL below to jdbc:postgresql://localhost:5432/wms
   datasource:
-    url: ${DATABASE_URL}
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/postgres}
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:giri}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -94,6 +94,9 @@ spring:
     properties:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
+      mail.smtp.connectiontimeout: 5000
+      mail.smtp.timeout: 5000
+      mail.smtp.writetimeout: 5000
 
 server:
   port: ${PORT:8080}
@@ -112,4 +115,4 @@ server:
 # login will still work (that redirect is driven by Google Cloud Console, not
 # this value) — only the emailed reset link will point at the wrong place.
 app:
-  base-url: ${APP_BASE_URL:http://localhost:8080}
+  base-url: http://localhost:8080
