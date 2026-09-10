@@ -13,7 +13,7 @@ spring:
   # yourself first:
   #   psql -U postgres -c "CREATE DATABASE wms;"
   # then change the URL below to jdbc:postgresql://localhost:5432/wms
-    datasource:
+  datasource:
     url: ${DATABASE_URL}
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
