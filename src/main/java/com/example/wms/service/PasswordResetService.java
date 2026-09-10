@@ -31,7 +31,7 @@ public class PasswordResetService {
                                  PasswordResetTokenRepository tokenRepository,
                                  PasswordEncoder passwordEncoder,
                                  MailService mailService,
-                                 @Value("${app.base-url}") String baseUrl) {
+                                 @Value("${https://warehousemanagementsystem-27lk.onrender.com}") String baseUrl) {
         this.userRepository = userRepository;
         this.tokenRepository = tokenRepository;
         this.passwordEncoder = passwordEncoder;
