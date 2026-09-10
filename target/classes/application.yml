@@ -1,0 +1,115 @@
+spring:
+  application:
+    name: wms
+
+  # --- Database -------------------------------------------------------
+  # Points at the "postgres" database that already exists on any fresh
+  # Postgres install — no separate database needs to be created first.
+  #
+  # Note: "createDatabaseIfNotExist=true" (sometimes seen in tutorials) is a
+  # MySQL Connector/J parameter, not a PostgreSQL one — the PostgreSQL JDBC
+  # driver doesn't recognize it. If you'd rather use your own database name
+  # (e.g. "wms") instead of the default "postgres" one, create it once
+  # yourself first:
+  #   psql -U postgres -c "CREATE DATABASE wms;"
+  # then change the URL below to jdbc:postgresql://localhost:5432/wms
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: giri
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  thymeleaf:
+    cache: false
+
+  # --- OAuth2 login (optional) -------------------------------------------
+  # The app runs perfectly fine with just form-based login while this block
+  # stays commented out. SecurityConfig checks whether a ClientRegistration
+  # bean exists at all and only enables the "Continue with Google" option if
+  # one is configured — so leaving this commented out is safe, not broken.
+  #
+  # To turn OAuth2 login on:
+  #   1. Create OAuth2 credentials at https://console.cloud.google.com/apis/credentials
+  #      (application type: "Web application")
+  #   2. Set the authorized redirect URI to EXACTLY:
+  #        http://localhost:8080/login/oauth2/code/google
+  #   3. Uncomment the block below.
+  #
+  # IMPORTANT — what "${GOOGLE_CLIENT_ID}" actually means:
+  # ${...} is Spring's syntax for "read this value from an OS environment
+  # variable at startup." It is NOT a fill-in-the-blank placeholder — do not
+  # paste your real client ID inside the braces (that produces the literal
+  # string "${" + your-id, which Google will reject with
+  # "Error 401: invalid_client / The OAuth client was not found", because
+  # that string doesn't match any real registered client).
+  #
+  # Pick ONE of these two approaches:
+  #
+  #   (a) Keep the ${...} syntax below and actually set the environment
+  #       variables before starting the app, e.g.:
+  #         GOOGLE_CLIENT_ID=your-id GOOGLE_CLIENT_SECRET=your-secret mvn spring-boot:run
+  #       (in IntelliJ: Run/Debug Configurations → Environment variables)
+  #
+  #   (b) Or skip environment variables entirely and replace the WHOLE
+  #       "${GOOGLE_CLIENT_ID}" token (braces and all) with your raw value:
+  #         client-id: 71234567890-abc123xyz.apps.googleusercontent.com
+  #       Fine for local/training use; just don't commit real secrets this way.
+
+  security:
+     oauth2:
+       client:
+         registration:
+           google:
+             client-id: ${GOOGLE_CLIENT_ID}
+             client-secret: ${GOOGLE_CLIENT_SECRET}
+             scope: openid,profile,email
+
+  # --- Email (SMTP) --------------------------------------------------------
+  # Used by MailService to send password-reset links. Fill in your own
+  # username and app password below directly (not an environment variable
+  # this time, by request) — for Gmail: username is your full address, and
+  # "password" must be a 16-character App Password, NOT your normal Gmail
+  # password (Google blocks that for SMTP). Generate one at:
+  # Google Account → Security → 2-Step Verification → App passwords.
+  #
+  # If you're not using Gmail, just change the host/port to match your
+  # provider instead.
+  #
+  # Don't commit this file with real credentials filled in if this repo is
+  # ever shared or made public.
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
+server:
+  port: 8080
+
+# --- App-specific settings ---------------------------------------------
+# Used to build links that get sent OUTSIDE this server's own requests — right
+# now, just the password-reset link emailed by PasswordResetService. Update
+# this to wherever the app is actually reachable from:
+#   - Plain local development:        http://localhost:8080  (the default below)
+#   - Testing through a Cloudflare (or ngrok, etc.) tunnel:  your tunnel's https:// URL
+#   - A real deployment:              your real domain
+#
+# This is the same category of thing as the OAuth2 redirect URI above — both
+# describe "where this app is publicly reachable," so update them together.
+# If you forget to update this one, the app will still run fine and OAuth2
+# login will still work (that redirect is driven by Google Cloud Console, not
+# this value) — only the emailed reset link will point at the wrong place.
+app:
+  base-url: http://localhost:8080

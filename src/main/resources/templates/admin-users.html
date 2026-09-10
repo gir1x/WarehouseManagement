@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Manage users · WareTrack</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="app-shell">
+    <aside class="sidebar">
+        <a href="/dashboard" class="sidebar__brand">
+            <span class="sidebar__logo">W</span>
+            <span class="sidebar__brand-text">WMS<b></b></span>
+        </a>
+        <nav id="topNav" class="sidebar__nav"></nav>
+        <div class="sidebar__footer">
+            <div class="user-chip">
+                <span class="user-chip__avatar" id="userAvatar"></span>
+                <div class="user-chip__info"><span id="userLabel" class="user-chip__name"></span></div>
+            </div>
+            <form method="post" th:action="@{/logout}" style="margin:0;">
+                <button type="submit" class="btn-ghost-sm" title="Sign out">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <div class="app-main">
+        <main>
+            <h1 class="page-title">Manage users</h1>
+            <p class="page-subtitle">Approve pending sign-ups, change roles, or remove an account. You can't change or delete your own account here.</p>
+
+            <div id="banner" class="banner"></div>
+
+            <div class="panel">
+                <table class="user-table">
+                    <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Signed in via</th>
+                        <th>Role</th>
+                        <th>Change to</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody id="userRows"></tbody>
+                </table>
+                <div id="userEmpty" class="empty-state" style="display:none;">
+                    <h3>No users found</h3>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script th:src="@{/js/api.js}"></script>
+<script th:src="@{/js/admin-users.js}"></script>
+</body>
+</html>

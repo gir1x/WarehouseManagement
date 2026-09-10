@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Products · WareTrack</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="app-shell">
+    <aside class="sidebar">
+        <a href="/dashboard" class="sidebar__brand">
+            <span class="sidebar__logo">W</span>
+            <span class="sidebar__brand-text">WMS<b></b></span>
+        </a>
+        <nav id="topNav" class="sidebar__nav"></nav>
+        <div class="sidebar__footer">
+            <div class="user-chip">
+                <span class="user-chip__avatar" id="userAvatar"></span>
+                <div class="user-chip__info"><span id="userLabel" class="user-chip__name"></span></div>
+            </div>
+            <form method="post" th:action="@{/logout}" style="margin:0;">
+                <button type="submit" class="btn-ghost-sm" title="Sign out">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <div class="app-main">
+        <main>
+            <h1 class="page-title">Products</h1>
+            <p class="page-subtitle">The catalog of SKUs that can be received into any warehouse.</p>
+
+            <div id="banner" class="banner"></div>
+
+            <div class="grid-2">
+                <div class="panel">
+                    <div class="panel__title">All products</div>
+                    <ul id="productList" class="wh-list"></ul>
+                    <div id="productEmpty" class="empty-state" style="display:none;">
+                        <h3>No products yet</h3>
+                        <p>Add one using the form on the right.</p>
+                    </div>
+                </div>
+
+                <div class="panel" id="createPanel" style="display:none;">
+                    <div class="panel__title">Add product</div>
+                    <form id="createForm">
+                        <div class="field">
+                            <label for="sku">SKU</label>
+                            <input id="sku" type="text" placeholder="SKU-002" required/>
+                        </div>
+                        <div class="field">
+                            <label for="name">Name</label>
+                            <input id="name" type="text" placeholder="Cardboard Box, 12x12x12" required/>
+                        </div>
+                        <div class="field">
+                            <label for="reorderThreshold">Reorder threshold</label>
+                            <input id="reorderThreshold" type="number" min="0" value="5" required/>
+                            <p class="helper-text">When total on-hand quantity (across every warehouse) drops to this level or below, it shows up under "Low stock" on the dashboard.</p>
+                        </div>
+                        <div class="field">
+                            <label for="unit">Unit</label>
+                            <select id="unit">
+                                <option value="pcs" selected>pcs</option>
+                                <option value="box">box</option>
+                                <option value="kg">kg</option>
+                                <option value="litre">litre</option>
+                                <option value="pallet">pallet</option>
+                            </select>
+                            <p class="helper-text">Shown next to every quantity for this product — doesn't change how slot occupancy works.</p>
+                        </div>
+                        <button type="submit" class="btn-primary" id="createBtn">Add product</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script th:src="@{/js/api.js}"></script>
+<script th:src="@{/js/products.js}"></script>
+</body>
+</html>

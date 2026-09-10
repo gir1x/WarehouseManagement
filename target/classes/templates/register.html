@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Create account · WareTrack</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="auth-shell">
+    <div class="auth-card">
+        <a href="/login" class="sidebar__brand" style="padding:0 0 var(--space-3) 0;">
+            <span class="sidebar__logo">W</span>
+            <span class="sidebar__brand-text">WMS<b></b></span>
+        </a>
+        <h1>Create account</h1>
+        <p class="page-subtitle">An admin will still need to approve access after you sign up.</p>
+
+        <div id="banner" class="banner"></div>
+
+        <form id="registerForm">
+            <div class="field">
+                <label for="username">Username</label>
+                <input id="username" type="text" autocomplete="username" required minlength="3" maxlength="50"/>
+            </div>
+            <div class="field">
+                <label for="email">Email</label>
+                <input id="email" type="email" autocomplete="email" required/>
+            </div>
+            <div class="field">
+                <label for="password">Password</label>
+                <input id="password" type="password" autocomplete="new-password" required minlength="6"/>
+                <p class="helper-text">At least 6 characters.</p>
+            </div>
+            <button type="submit" class="btn-primary" id="registerBtn" style="width:100%; justify-content:center;">Create account</button>
+        </form>
+
+        <p class="helper-text" style="text-align:center; margin-top: var(--space-3);">
+            Already have an account? <a href="/login">Sign in</a>
+        </p>
+    </div>
+</div>
+
+<script th:src="@{/js/api.js}"></script>
+<script>
+  document.getElementById('registerForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    hideBanner('banner');
+    const btn = document.getElementById('registerBtn');
+    btn.disabled = true;
+    btn.textContent = 'Creating…';
+
+    Api.post('/api/auth/register', {
+      username: document.getElementById('username').value,
+      email: document.getElementById('email').value,
+      password: document.getElementById('password').value,
+    })
+      .then(function () {
+        window.location.href = '/login?registered=true';
+      })
+      .catch(function (err) {
+        showBanner('banner', err.message, 'error');
+        btn.disabled = false;
+        btn.textContent = 'Create account';
+      });
+  });
+</script>
+</body>
+</html>

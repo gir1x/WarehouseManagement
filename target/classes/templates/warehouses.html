@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Warehouses · WareTrack</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="app-shell">
+    <aside class="sidebar">
+        <a href="/dashboard" class="sidebar__brand">
+            <span class="sidebar__logo">W</span>
+            <span class="sidebar__brand-text">WMS<b></b></span>
+        </a>
+        <nav id="topNav" class="sidebar__nav"></nav>
+        <div class="sidebar__footer">
+            <div class="user-chip">
+                <span class="user-chip__avatar" id="userAvatar"></span>
+                <div class="user-chip__info"><span id="userLabel" class="user-chip__name"></span></div>
+            </div>
+            <form method="post" th:action="@{/logout}" style="margin:0;">
+                <button type="submit" class="btn-ghost-sm" title="Sign out">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <div class="app-main">
+        <main>
+            <h1 class="page-title">Warehouses</h1>
+            <p class="page-subtitle">Every facility currently set up in the system.</p>
+
+            <div id="banner" class="banner"></div>
+
+            <div class="grid-2">
+                <div class="panel">
+                    <div class="panel__title">All warehouses</div>
+                    <ul id="whList" class="wh-list"></ul>
+                    <div id="whEmpty" class="empty-state" style="display:none;">
+                        <h3>No warehouses yet</h3>
+                        <p>Create the first one using the form on the right.</p>
+                    </div>
+                </div>
+
+                <div class="panel" id="createPanel" style="display:none;">
+                    <div class="panel__title">Create warehouse</div>
+                    <form id="createForm">
+                        <div class="field">
+                            <label for="name">Name</label>
+                            <input id="name" name="name" type="text" placeholder="Chennai DC-1" required/>
+                        </div>
+                        <div class="field-row">
+                            <div class="field">
+                                <label for="aisles">Aisles</label>
+                                <input id="aisles" name="aisles" type="number" min="1" value="4" required/>
+                            </div>
+                            <div class="field">
+                                <label for="tiers">Tiers</label>
+                                <input id="tiers" name="tiers" type="number" min="1" value="3" required/>
+                            </div>
+                        </div>
+                        <p class="helper-text">This generates one slot for every Aisle × Tier cell — it can't be resized afterward.</p>
+                        <button type="submit" class="btn-primary" id="createBtn">Create warehouse</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script th:src="@{/js/api.js}"></script>
+<script th:src="@{/js/warehouses.js}"></script>
+</body>
+</html>

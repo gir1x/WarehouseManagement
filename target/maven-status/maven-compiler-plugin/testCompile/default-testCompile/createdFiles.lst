@@ -1,0 +1,9 @@
+com\example\wms\domain\SlotStateTest.class
+com\example\wms\service\MailServiceTest.class
+com\example\wms\service\ProductServiceTest.class
+com\example\wms\service\allocation\FirstAvailableStrategyTest.class
+com\example\wms\service\NotificationServiceTest.class
+com\example\wms\security\CustomUserDetailsServiceTest.class
+com\example\wms\service\UserAdminServiceTest.class
+com\example\wms\service\PasswordResetServiceTest.class
+com\example\wms\service\AuthServiceTest.class

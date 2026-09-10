@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Dashboard · WareTrack</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="app-shell">
+    <aside class="sidebar">
+        <a href="/dashboard" class="sidebar__brand">
+            <span class="sidebar__logo">W</span>
+            <span class="sidebar__brand-text">WMS<b></b></span>
+        </a>
+        <nav id="topNav" class="sidebar__nav"></nav>
+        <div class="sidebar__footer">
+            <div class="user-chip">
+                <span class="user-chip__avatar" id="userAvatar"></span>
+                <div class="user-chip__info"><span id="userLabel" class="user-chip__name"></span></div>
+            </div>
+            <form method="post" th:action="@{/logout}" style="margin:0;">
+                <button type="submit" class="btn-ghost-sm" title="Sign out">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <div class="app-main">
+        <main>
+            <h1 class="page-title">Dashboard</h1>
+            <p class="page-subtitle">Occupancy across every warehouse, capacity and stock alerts, and the latest activity.</p>
+
+            <div id="pendingNotice" class="pending-notice" style="display:none;">
+                <h2>Your account is awaiting approval</h2>
+                <p>An admin needs to assign you a role (Visitor or Admin) before you can use the system. Check back shortly, or ask whoever administers this instance.</p>
+            </div>
+
+            <div id="mainPanels" style="display:none;">
+
+                <div class="kpi-row">
+                    <div class="kpi-card kpi-card--blue">
+                        <div class="kpi-card__label">Warehouses</div>
+                        <div class="kpi-card__value" id="kpiWarehouses">—</div>
+                    </div>
+                    <div class="kpi-card kpi-card--purple">
+                        <div class="kpi-card__label">Products</div>
+                        <div class="kpi-card__value" id="kpiProducts">—</div>
+                    </div>
+                    <div class="kpi-card kpi-card--teal">
+                        <div class="kpi-card__label">Slots filled</div>
+                        <div class="kpi-card__value" id="kpiFilled">—</div>
+                        <div class="kpi-card__sub" id="kpiFilledSub">&nbsp;</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-card__label">Overall utilization</div>
+                        <div class="kpi-card__value" id="kpiUtilization">—</div>
+                        <div class="kpi-card__sub" id="kpiAvailableSub">&nbsp;</div>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div>
+                        <div class="panel">
+                            <div class="panel__title">
+                                <span>Recent activity</span>
+                                <span class="helper-text" style="margin:0;">Last 20 receives / picks, across all warehouses</span>
+                            </div>
+                            <div class="activity-scroll">
+                                <table class="activity-table">
+                                    <thead>
+                                    <tr>
+                                        <th>When</th>
+                                        <th>Warehouse</th>
+                                        <th>Slot</th>
+                                        <th>SKU</th>
+                                        <th>Qty</th>
+                                        <th>Type</th>
+                                        <th>By</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="activityRows"></tbody>
+                                </table>
+                            </div>
+                            <div id="activityEmpty" class="empty-state" style="display:none;">
+                                <h3>No activity yet</h3>
+                                <p>Receives and picks will show up here as they happen.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="panel">
+                            <div class="panel__title">
+                                <span>High Utilization</span>
+<!--                                <span class="badge-pill badge-pill&#45;&#45;warning">≥ 85% full</span>-->
+                            </div>
+                            <ul class="alert-list" id="nearFullList"></ul>
+                            <div id="nearFullEmpty" class="empty-state" style="display:none; padding: var(--space-3) var(--space-2);">
+                                <p>All warehouses have healthy capacity.</p>
+                            </div>
+                        </div>
+
+                        <div class="panel">
+                            <div class="panel__title">
+                                <span>Low stock</span>
+<!--                                <span class="badge-pill badge-pill&#45;&#45;danger">at/below reorder point</span>-->
+                            </div>
+                            <ul class="alert-list" id="lowStockList"></ul>
+                            <div id="lowStockEmpty" class="empty-state" style="display:none; padding: var(--space-3) var(--space-2);">
+                                <p>No products are running low.</p>
+                            </div>
+                        </div>
+
+                        <div class="panel">
+                            <div class="panel__title">Quick links</div>
+                            <p style="margin: 0;">
+                                <a href="/warehouses" class="btn btn-primary">Warehouses →</a>
+                                <a href="/products" class="btn btn-outline" style="margin-left: var(--space-2);">Products</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script th:src="@{/js/api.js}"></script>
+<script th:src="@{/js/dashboard.js}"></script>
+</body>
+</html>

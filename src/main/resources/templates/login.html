@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Sign in · WareTrack</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="auth-shell">
+    <div class="auth-card">
+        <a href="/login" class="sidebar__brand" style="padding:0 0 var(--space-3) 0;">
+            <span class="sidebar__logo">W</span>
+            <span class="sidebar__brand-text">WMS<b></b></span>
+        </a>
+        <h1>Sign in</h1>
+        <p class="page-subtitle">Receive, pick, and track stock across your warehouses.</p>
+
+        <div th:if="${param.error}" class="banner banner-error is-visible">
+            That username or password isn't right. Try again.
+        </div>
+        <div th:if="${param.logout}" class="banner banner-success is-visible">
+            You've been signed out.
+        </div>
+        <div th:if="${param.registered}" class="banner banner-success is-visible">
+            Account created. Sign in below — an admin still needs to approve access before you can use the system.
+        </div>
+        <div th:if="${param.reset}" class="banner banner-success is-visible">
+            Password updated. Sign in with your new password.
+        </div>
+
+        <form method="post" th:action="@{/login}">
+            <div class="field">
+                <label for="username">Username or email</label>
+                <input id="username" type="text" name="username" autocomplete="username" placeholder="e.g. Giri or giridharan@unitedtechno.com" required/>
+            </div>
+            <div class="field">
+                <label for="password">Password</label>
+                <input id="password" type="password" name="password" autocomplete="current-password" required/>
+            </div>
+            <button type="submit" class="btn-primary" style="width:100%; justify-content:center;">Sign in</button>
+        </form>
+
+        <p class="helper-text" style="text-align:center; margin-top: var(--space-3);">
+            <a href="/forgot-password">Forgot password?</a>
+        </p>
+        <p class="helper-text" style="text-align:center; margin-top: var(--space-1);">
+            New here? <a href="/register">Create an account</a>
+        </p>
+
+        <div class="auth-divider" th:if="${oauth2Enabled}">or</div>
+
+        <a th:if="${oauth2Enabled}" href="/oauth2/authorization/google" class="btn btn-outline" style="width:100%; justify-content:center;">
+            Continue with Google
+        </a>
+
+<!--        <div class="seed-note">-->
+<!--            Test accounts — <code>admin / admin123</code> (Admin) · <code>visitor / visitor123</code> (Visitor) · <code>newuser / newuser123</code> (Pending)-->
+<!--        </div>-->
+    </div>
+</div>
+</body>
+</html>

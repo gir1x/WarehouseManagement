@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Warehouse floor · WareTrack</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body th:attr="data-warehouse-id=${warehouseId}">
+<div class="app-shell">
+    <aside class="sidebar">
+        <a href="/dashboard" class="sidebar__brand">
+            <span class="sidebar__logo">W</span>
+            <span class="sidebar__brand-text">WMS<b></b></span>
+        </a>
+        <nav id="topNav" class="sidebar__nav"></nav>
+        <div class="sidebar__footer">
+            <div class="user-chip">
+                <span class="user-chip__avatar" id="userAvatar"></span>
+                <div class="user-chip__info"><span id="userLabel" class="user-chip__name"></span></div>
+            </div>
+            <form method="post" th:action="@{/logout}" style="margin:0;">
+                <button type="submit" class="btn-ghost-sm" title="Sign out">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <div class="app-main">
+        <main>
+            <span class="crumb"><a href="/warehouses">Warehouses</a> / <span id="whNameCrumb">…</span></span>
+            <h1 class="page-title" id="whName">Loading…</h1>
+            <p class="page-subtitle" id="whDims">&nbsp;</p>
+
+            <div id="banner" class="banner"></div>
+
+            <div class="panel">
+                <div class="panel__title">Occupancy report</div>
+                <div class="stat-row">
+                    <div class="stat-block">
+                        <div class="stat-figure stat-figure--total" id="statTotal">—</div>
+                        <div class="stat-label">Total</div>
+                    </div>
+                    <div class="stat-block">
+                        <div class="stat-figure stat-figure--filled" id="statFilled">—</div>
+                        <div class="stat-label">Filled</div>
+                    </div>
+                    <div class="stat-block">
+                        <div class="stat-figure stat-figure--available" id="statAvailable">—</div>
+                        <div class="stat-label">Available</div>
+                    </div>
+                    <div class="hp-bar-wrap">
+                        <div class="hp-bar" id="hpBar"></div>
+                        <div class="hp-bar-caption">
+                            <span id="hpCaption">— % full</span>
+                            <span id="nearFullBadge" class="badge-pill badge-pill--warning" style="display:none; margin-left:8px;">Near full</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-legend">
+                    <span><span class="swatch swatch--occupied"></span> Occupied</span>
+                    <span><span class="swatch swatch--empty"></span> Empty</span>
+                </div>
+            </div>
+
+            <div class="grid-2" style="margin-top: var(--space-5);">
+                <div class="panel">
+                    <div class="panel__title">
+                        <span>Floor plan</span>
+                        <span class="helper-text" style="margin:0;">Click an empty tile to receive · click a filled tile to pick</span>
+                    </div>
+                    <div class="floor" id="floor">
+                        <div class="floor-loading">Loading floor…</div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="panel">
+                        <div class="panel__title">Receive item</div>
+                        <form id="receiveForm">
+                            <div class="field">
+                                <label>Destination slot</label>
+                                <div class="role-select-row" style="justify-content: space-between;">
+                                    <span id="receiveSlotLabel" class="mono">Auto-assign (first available)</span>
+                                    <button type="button" class="btn-outline" id="receiveSlotClear" style="display:none;">Clear</button>
+                                </div>
+                                <p class="helper-text">Click an empty slot on the floor plan to choose one, or leave as auto-assign. If a slot is already occupied, pick another empty one.</p>
+                            </div>
+                            <div class="field">
+                                <label for="sku">Product</label>
+                                <select id="sku" name="sku" required>
+                                    <option value="" disabled selected>Loading products…</option>
+                                </select>
+                                <p class="helper-text">No products yet? <a href="/products">Add one first</a>.</p>
+                            </div>
+                            <div class="field">
+                                <label for="qty">Quantity</label>
+                                <input id="qty" name="qty" type="number" min="1" value="1" required/>
+                            </div>
+                            <button type="submit" class="btn-primary" id="receiveBtn">Receive →</button>
+                        </form>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel__title">Pick item</div>
+                        <div id="pickEmpty" class="helper-text">Select an occupied slot on the floor plan to pick from it.</div>
+                        <div id="pickSelected" style="display:none;">
+                            <p style="margin: 0 0 var(--space-3) 0;">
+                                Slot <strong id="pickCoord" class="mono"></strong> —
+                                <span id="pickSku" class="mono"></span> (<span id="pickAvailable"></span> available)
+                            </p>
+                            <div class="field">
+                                <label for="pickQtyInput">Quantity to pick</label>
+                                <input id="pickQtyInput" type="number" min="1" value="1"/>
+                                <p class="helper-text">Picking less than the full amount leaves the rest in the slot.</p>
+                            </div>
+                            <button type="button" class="btn-danger" id="pickBtn">← Pick from this slot</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel" style="margin-top: var(--space-4);">
+                <div class="panel__title">
+                    <span>Activity log</span>
+                    <span class="helper-text" style="margin:0;">Every receive and pick against this warehouse, most recent first</span>
+                </div>
+                <div class="activity-scroll">
+                    <table class="activity-table">
+                        <thead>
+                        <tr>
+                            <th>When</th>
+                            <th>Slot</th>
+                            <th>SKU</th>
+                            <th>Qty</th>
+                            <th>Type</th>
+                            <th>By</th>
+                        </tr>
+                        </thead>
+                        <tbody id="activityRows"></tbody>
+                    </table>
+                </div>
+                <div id="activityEmpty" class="empty-state" style="display:none;">
+                    <h3>No activity yet</h3>
+                    <p>Receives and picks against this warehouse will show up here.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script th:src="@{/js/api.js}"></script>
+<script th:src="@{/js/warehouse-detail.js}"></script>
+</body>
+</html>
