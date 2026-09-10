@@ -75,7 +75,10 @@ public class NotificationService {
             return;
         }
 
-        String when = TIMESTAMP_FORMAT.format(Instant.now()) + " UTC";
+        // String when = TIMESTAMP_FORMAT.format(Instant.now()) + " UTC";
+        DateTimeFormatter istFormatter = TIMESTAMP_FORMAT.withZone(ZoneId.of("Asia/Kolkata"));
+
+        String when = istFormatter.format(Instant.now()) + " IST";
 
         if (user.getEmail() != null) {
             mailService.sendNotification(
